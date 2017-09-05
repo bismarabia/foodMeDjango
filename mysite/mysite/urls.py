@@ -20,6 +20,7 @@ from myApp.views import *
 
 urlpatterns = [
     url(r'^admin/', 			admin.site.urls),
+    url(r'^addSchool',          addSchool),
     url(r'^connect', 			connect),
     url(r'^addUser', 			addUser),
     url(r'^pay', 				pay),
