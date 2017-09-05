@@ -1,7 +1,20 @@
 from django.db import models
 from myApp.utils import Timestampable
 
+class School(Timestampable, models.Model):
+	
+	school_id		= models.CharField(max_length = 256)
+	school_token 	= models.CharField(max_length = 256)
+	school_name 	= models.IntegerField(default = 0)
+	school_password	= models.CharField(max_length = 256)
+	school_plan		= models.CharField(max_length = 20)		# 1 year, 2 years, ...
+
+	def __str__(self):
+		return self.school_name	
+
+
 class User(Timestampable, models.Model):
+	school 		= models.ForeignKey(School, related_name = 'school_enrolled_in')
 	idd 		= models.IntegerField(default=0)
 	username 	= models.CharField(max_length=256, null=True)	
 	password 	= models.CharField(max_length=256, null=True)

@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import *
 from django.contrib import messages
-from django.utils.safestring import mark_safe
 
 def totalPrice(modeladmin, request, queryset):
 	total = 0
@@ -17,6 +16,7 @@ class PurchaseLogAdmin(admin.ModelAdmin):
 	list_filter = ('user',)
 	actions = [totalPrice]
 
+admin.site.register(School)
 admin.site.register(User)
 admin.site.register(LoginLog)
 admin.site.register(FoodList)

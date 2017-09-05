@@ -7,11 +7,20 @@ from .models import *
 import json
 
 @csrf_exempt
+def addSchool(request):
+	if request.method == 'POST':
+		pass
+	else:
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"connect","error": "no post"})
+
+
+
+@csrf_exempt
 def connect(request):
 	if request.method == 'POST':
-		con = json.loads(request.body.decode('utf-8'))
-		ids = con['params']['id']
-		password = con['params']['password']
+		requestBody = json.loads(request.body.decode('utf-8'))
+		ids = requestBody['params']['id']
+		password = requestBody['params']['password']
 		if User.objects.filter(idd=ids, password=password):
 			logs = LoginLog(username=ids,
 						password = password)
@@ -22,7 +31,7 @@ def connect(request):
 		else:
 			return JsonResponse({"result":{"msg":"not ql","status": 2},"id":"connect","error": "no user"})
 	else:
-		return JsonResponse({"result":{"msg":"no post","status": 2},"id":"connect","error": "no post"})
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"connect","error": "no post"})
 
 @csrf_exempt
 def getUsers(request):
@@ -37,13 +46,13 @@ def getUsers(request):
 								"status": 1, "users":usersList},
 								 "error": "null"})
 	else:
-		return JsonResponse({"result":{"msg":"no post","status": 2},"id":"connect","error": "no post"})	
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"getUsers","error": "no post"})	
 
 @csrf_exempt
 def addUser(request):
 	if request.method == 'POST':
-		con = json.loads(request.body.decode('utf-8'))
-		users = con['params']['users']
+		requestBody = json.loads(request.body.decode('utf-8'))
+		users = requestBody['params']['users']
 		for user in users:
 			if not User.objects.filter(idd = user['id']):
 				u = User(idd = user['id'],
@@ -53,13 +62,13 @@ def addUser(request):
 				u.save()
 		return JsonResponse({"result":{"msg":"success","status": 1},"id":"addUser","error": "null"})
 	else:
-		return JsonResponse({"result":{"msg":"no post","status": 2},"id":"addUser","error": "no post"})
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"addUser","error": "no post"})
 
 @csrf_exempt
 def addFoodList(request):
 	if request.method == 'POST':
-		con = json.loads(request.body.decode('utf-8'))
-		food_list = con['food_menu']
+		requestBody = json.loads(request.body.decode('utf-8'))
+		food_list = requestBody['food_menu']
 		for food in food_list:
 			if food not in FoodList.objects.all():
 				fl = FoodList(pic_id	= food['pic_id'],
@@ -68,7 +77,7 @@ def addFoodList(request):
 				fl.save()
 		return JsonResponse({"result":{"msg":"success","status": 1},"id":"addFoodList","error": "null"})
 	else:
-		return JsonResponse({"result":{"msg":"no post","status": 2},"id":"addUser","error": "no post"})
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"addFoodList","error": "no post"})
 
 
 @csrf_exempt
@@ -83,14 +92,14 @@ def getFoodList(request):
 								"status": 1, "food_list":food_list},
 								 "error": "null"})
 	else:
-		return JsonResponse({"result":{"msg":"no post","status": 2},"id":"addUser","error": "no post"})
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"getFoodList","error": "no post"})
 
 @csrf_exempt
 def pay(request):
 	if request.method == 'POST':
-		con = json.loads(request.body.decode('utf-8'))
-		ids 	= con['params']['id']
-		amount 	= con['params']['amount']
+		requestBody = json.loads(request.body.decode('utf-8'))
+		ids 	= requestBody['params']['id']
+		amount 	= requestBody['params']['amount']
 		current_credit = getattr(User.objects.get(idd= ids), "credit")
 		if (current_credit - amount) < 0:
 			return JsonResponse({"result":{"msg":"not enough credit","status": 0},"id":"pay","error": "null"})
@@ -98,17 +107,17 @@ def pay(request):
 			User.objects.filter(idd=ids).update(credit= (current_credit - amount))
 			return JsonResponse({"result":{"msg":"success","status": 1},"id":"pay","error": "null"})
 	else:
-		return JsonResponse({"result":{"msg":"no post","status": 2},"id":"pay","error": "no post"})
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"pay","error": "no post"})
 
 @csrf_exempt
 def addFoodPurchaseLog(request):
 	if request.method == 'POST':
-		con = json.loads(request.body.decode('utf-8'))
-		ids 			= con['params']['id']
-		username		= con['params']['username']
+		requestBody = json.loads(request.body.decode('utf-8'))
+		ids 			= requestBody['params']['id']
+		username		= requestBody['params']['username']
 		food_purchased 	= []
 
-		for food in con['params']['purchased_food']:
+		for food in requestBody['params']['purchased_food']:
 			pl = PurchaseLog(user 		= User.objects.get(username=username),
 							 name 		= food['name'],
 							 quantity 	= food['quantity'],
@@ -121,7 +130,7 @@ def addFoodPurchaseLog(request):
 									'quantity' : o.quantity,
 									'price' : o.price,
 									'time' : o.time, })
-		return JsonResponse({"result":{"msg":"success","food_purchased":food_purchased ,"status": 1},"id":"addLog","error": "null"})
+		return JsonResponse({"result":{"msg":"success","food_purchased":food_purchased ,"status": 1},"id":"addFoodPurchaseLog","error": "null"})
 	else:
-		return JsonResponse({"result":{"msg":"no post","status": 2},"id":"pay","error": "no post"})
+		return JsonResponse({"result":{"msg":"choose POST method","status": 2},"id":"addFoodPurchaseLog","error": "no post"})
 
